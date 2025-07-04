@@ -1,25 +1,19 @@
 <?php
-
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LibroController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
-Auth::routes();
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/test-oracle', function () {
-    try {
-        // Solo probar conexión básica
-        $pdo = DB::connection('oracle')->getPdo();
-        
-        // Probar una consulta simple
-        $result = DB::connection('oracle')->select('SELECT 1 as test FROM dual');
-        
-        return "¡Conexión exitosa! Resultado: " . json_encode($result);
-    } catch (\Exception $e) {
-        return "Error: " . $e->getMessage();
-    }
+Route::middleware('oracle.auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+    
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::resource('libros', LibroController::class);
 });
