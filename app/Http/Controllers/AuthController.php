@@ -21,25 +21,17 @@ class AuthController extends Controller
         ]);
 
         try {
-            // Llamar al procedimiento almacenado
-            $pdo = DB::connection('oracle')->getPdo();
-            $stmt = $pdo->prepare("BEGIN sp_login_usuario(?, ?, ?, ?); END;");
-            
-            $resultado = '';
-            $rol = '';
-            
-            $stmt->bindParam(1, $request->username);
-            $stmt->bindParam(2, $request->password);
-            $stmt->bindParam(3, $resultado, \PDO::PARAM_STR, 50);
-            $stmt->bindParam(4, $rol, \PDO::PARAM_STR, 50);
-            
-            $stmt->execute();
+            // Método alternativo: usar una consulta directa primero para probar
+            $user = DB::connection('oracle')->select(
+                "SELECT username, rol FROM usuarios WHERE username = ? AND password = ?",
+                [$request->username, $request->password]
+            );
 
-            if ($resultado === 'SUCCESS') {
+            if (!empty($user)) {
                 // Guardar datos en sesión
                 Session::put('user_logged', true);
-                Session::put('username', $request->username);
-                Session::put('rol', $rol);
+                Session::put('username', $user[0]->username);
+                Session::put('rol', $user[0]->rol);
                 
                 return redirect()->route('dashboard')->with('success', 'Bienvenido!');
             } else {
