@@ -1,6 +1,6 @@
 # Sistema de Biblioteca Virtual
 
-Un sistema web desarrollado en Laravel con Oracle Database que permite gestionar el catálogo de libros de una biblioteca.
+Un sistema web desarrollado en Laravel con Oracle Database que permite gestionar el catálogo de libros de una biblioteca
 
 ## 📋 Características
 
