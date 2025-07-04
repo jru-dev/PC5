@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'oracle'),
+    'default' => env('DB_CONNECTION', 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
@@ -98,14 +98,24 @@ return [
         ],
 
         'oracle' => [
-            'driver' => 'pdo',
-            'dsn' => 'oci:dbname=//'.env('DB_HOST').':'.env('DB_PORT').'/'.env('DB_DATABASE'),
-            'username' => env('DB_USERNAME'),
-            'password' => env('DB_PASSWORD'),
-            'charset' => 'AL32UTF8',
-            'prefix' => '',
-            'prefix_schema' => '',
+            'driver'         => 'oracle',
+            'tns'            => env('DB_TNS', ''),
+            'host'           => env('DB_HOST', 'localhost'),
+            'port'           => env('DB_PORT', '1521'),
+            'database'       => env('DB_DATABASE', 'xe'),
+            'service_name'   => env('DB_SERVICE_NAME', ''),
+            'username'       => env('DB_USERNAME', 'hr'),
+            'password'       => env('DB_PASSWORD', ''),
+            'charset'        => env('DB_CHARSET', 'AL32UTF8'),
+            'prefix'         => env('DB_PREFIX', ''),
+            'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
+            'edition'        => env('DB_EDITION', 'ora$base'),
+            'server_version' => env('DB_SERVER_VERSION', '11g'),
+            'load_balance'   => env('DB_LOAD_BALANCE', 'yes'),
+            'max_name_len'   => env('DB_MAX_NAME_LEN', 30),
+            'dynamic'        => [],
         ],
+
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
