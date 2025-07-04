@@ -1,61 +1,372 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Biblioteca Virtual
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Un sistema web desarrollado en Laravel con Oracle Database que permite gestionar el catálogo de libros de una biblioteca.
 
-## About Laravel
+## 📋 Características
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Autenticación personalizada** con Oracle Database
+- **Gestión completa de libros** (CRUD)
+- **Control de roles** (Bibliotecario/Usuario)
+- **Dashboard con estadísticas** en tiempo real
+- **Interfaz responsive** con Bootstrap
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Tecnologías Utilizadas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend:** Laravel 12.19.3
+- **Base de Datos:** Oracle Database
+- **Frontend:** Bootstrap 5.1.3
+- **PHP:** 8.2+
+- **Servidor Web:** Apache/Nginx
 
-## Learning Laravel
+## 📋 Requisitos Previos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Software Requerido
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. **PHP 8.2 o superior**
+2. **Composer**
+3. **Oracle Database** (11g o superior)
+4. **Servidor Web** (Apache/Nginx)
+5. **Git**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Extensiones PHP Requeridas
 
-## Laravel Sponsors
+- php-oci8
+- php-mbstring
+- php-xml
+- php-curl
+- php-zip
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Instalación
 
-### Premium Partners
+### 1. Clonar el Repositorio
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone https://github.com/tu-usuario/biblioteca-virtual.git
+cd biblioteca-virtual
+```
 
-## Contributing
+### 2. Instalar Dependencias
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer install
+```
 
-## Code of Conduct
+### 3. Configurar el Archivo de Entorno
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Editar el archivo `.env` con tu configuración:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+APP_NAME="Biblioteca Virtual"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 
-## License
+# Configuración Oracle
+DB_CONNECTION=oracle
+DB_HOST=localhost
+DB_PORT=1521
+DB_DATABASE=XE
+DB_USERNAME=tu_usuario_oracle
+DB_PASSWORD=tu_password_oracle
+DB_CHARSET=AL32UTF8
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Configuración de Sesiones
+SESSION_DRIVER=file
+CACHE_DRIVER=file
+QUEUE_CONNECTION=sync
+```
+
+### 4. Generar Clave de Aplicación
+
+```bash
+php artisan key:generate
+```
+
+### 5. Configurar Oracle
+
+#### Instalar Oracle Instant Client
+
+**Windows:**
+1. Descargar Oracle Instant Client desde el sitio oficial
+2. Extraer en `C:\instantclient_XX_X`
+3. Agregar la ruta al PATH del sistema
+
+**Linux/Ubuntu:**
+```bash
+sudo apt-get install alien libaio1
+# Descargar e instalar Oracle Instant Client
+```
+
+#### Instalar Extensión OCI8
+
+**Con PECL:**
+```bash
+sudo pecl install oci8
+```
+
+**Activar en php.ini:**
+```ini
+extension=oci8
+```
+
+### 6. Configurar Base de Datos
+
+#### Crear las Tablas
+
+```sql
+-- Tabla de usuarios
+CREATE TABLE usuarios (
+    id NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    username VARCHAR2(50) UNIQUE NOT NULL,
+    email VARCHAR2(100) UNIQUE NOT NULL,
+    password VARCHAR2(255) NOT NULL,
+    rol VARCHAR2(20) DEFAULT 'usuario' CHECK (rol IN ('bibliotecario', 'usuario')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de libros
+CREATE TABLE libros (
+    id NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    titulo VARCHAR2(200) NOT NULL,
+    autor VARCHAR2(100) NOT NULL,
+    isbn VARCHAR2(20) UNIQUE,
+    categoria VARCHAR2(50),
+    disponible NUMBER(1) DEFAULT 1 CHECK (disponible IN (0,1)),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Crear Procedimientos Almacenados
+
+```sql
+-- Procedimiento para login
+CREATE OR REPLACE PROCEDURE sp_login_usuario(
+    p_username IN VARCHAR2,
+    p_password IN VARCHAR2,
+    p_resultado OUT VARCHAR2,
+    p_rol OUT VARCHAR2
+) 
+AS
+BEGIN
+    SELECT rol INTO p_rol 
+    FROM usuarios 
+    WHERE username = p_username AND password = p_password;
+    
+    p_resultado := 'SUCCESS';
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        p_resultado := 'INVALID_CREDENTIALS';
+        p_rol := NULL;
+    WHEN OTHERS THEN
+        p_resultado := 'ERROR';
+        p_rol := NULL;
+END sp_login_usuario;
+/
+
+-- Procedimiento para listar libros
+CREATE OR REPLACE PROCEDURE sp_listar_libros(
+    p_cursor OUT SYS_REFCURSOR
+) 
+AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT id, titulo, autor, isbn, categoria, disponible
+        FROM libros
+        ORDER BY titulo;
+END sp_listar_libros;
+/
+
+-- Procedimiento para insertar libro
+CREATE OR REPLACE PROCEDURE sp_insertar_libro(
+    p_titulo IN VARCHAR2,
+    p_autor IN VARCHAR2,
+    p_isbn IN VARCHAR2,
+    p_categoria IN VARCHAR2,
+    p_resultado OUT VARCHAR2
+) 
+AS
+BEGIN
+    INSERT INTO libros (titulo, autor, isbn, categoria, disponible)
+    VALUES (p_titulo, p_autor, p_isbn, p_categoria, 1);
+    
+    p_resultado := 'SUCCESS';
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        p_resultado := 'ERROR';
+        ROLLBACK;
+END sp_insertar_libro;
+/
+```
+
+#### Insertar Datos de Prueba
+
+```sql
+-- Usuarios de prueba
+INSERT INTO usuarios (username, email, password, rol) 
+VALUES ('admin', 'admin@biblioteca.com', 'admin123', 'bibliotecario');
+
+INSERT INTO usuarios (username, email, password, rol) 
+VALUES ('usuario1', 'usuario1@ejemplo.com', '123456', 'usuario');
+
+-- Libros de prueba
+INSERT INTO libros (titulo, autor, isbn, categoria, disponible) 
+VALUES ('Cien años de soledad', 'Gabriel García Márquez', '978-0307474728', 'Literatura', 1);
+
+INSERT INTO libros (titulo, autor, isbn, categoria, disponible) 
+VALUES ('Don Quijote de la Mancha', 'Miguel de Cervantes', '978-8437604947', 'Clásicos', 1);
+
+INSERT INTO libros (titulo, autor, isbn, categoria, disponible) 
+VALUES ('1984', 'George Orwell', '978-0451524935', 'Ficción', 0);
+
+COMMIT;
+```
+
+### 7. Verificar Conexión
+
+```bash
+# Probar la conexión a Oracle
+php artisan tinker
+DB::connection('oracle')->select('SELECT 1 as test FROM dual');
+```
+
+### 8. Iniciar el Servidor
+
+```bash
+php artisan serve
+```
+
+Visita: `http://localhost:8000`
+
+## 👥 Usuarios de Prueba
+
+| Usuario | Contraseña | Rol |
+|---------|------------|-----|
+| admin | admin123 | bibliotecario |
+| usuario1 | 123456 | usuario |
+
+## 📁 Estructura del Proyecto
+
+```
+biblioteca-virtual/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── AuthController.php
+│   │   │   └── LibroController.php
+│   │   └── Middleware/
+│   │       └── OracleAuth.php
+├── resources/
+│   └── views/
+│       ├── auth/
+│       │   └── login.blade.php
+│       ├── libros/
+│       │   ├── index.blade.php
+│       │   ├── create.blade.php
+│       │   ├── show.blade.php
+│       │   └── edit.blade.php
+│       └── dashboard.blade.php
+├── routes/
+│   └── web.php
+└── bootstrap/
+    └── app.php
+```
+
+## 🔧 Funcionalidades
+
+### Para Usuarios
+- ✅ Iniciar sesión
+- ✅ Ver catálogo de libros
+- ✅ Ver detalles de libros
+- ✅ Consultar estadísticas
+
+### Para Bibliotecarios
+- ✅ Todas las funciones de usuario
+- ✅ Agregar nuevos libros
+- ✅ Editar información de libros
+- ✅ Eliminar libros
+- ✅ Cambiar estado de disponibilidad
+
+## 🐛 Solución de Problemas
+
+### Error: "Vite manifest not found"
+```bash
+# Instalar dependencias y compilar assets
+npm install
+npm run build
+```
+
+### Error: "Unsupported driver [oracle]"
+```bash
+# Verificar que se instaló correctamente yajra/laravel-oci8
+composer show yajra/laravel-oci8
+
+# Limpiar caché
+php artisan config:clear
+php artisan cache:clear
+```
+
+### Error de conexión Oracle
+1. Verificar que Oracle esté ejecutándose
+2. Comprobar credenciales en `.env`
+3. Verificar que la extensión OCI8 esté instalada: `php -m | grep oci`
+
+## 📄 Base de Datos - Opciones de Distribución
+
+### Opción 1: Archivo SQL (Recomendado)
+Crear un archivo `database/schema.sql` con todas las tablas, procedimientos y datos:
+
+```sql
+-- Ver archivo schema.sql incluido en el proyecto
+```
+
+### Opción 2: Export/Import Oracle
+```bash
+# Exportar (en el servidor origen)
+expdp username/password@database directory=DATA_PUMP_DIR dumpfile=biblioteca.dmp schemas=tu_esquema
+
+# Importar (en el servidor destino)
+impdp username/password@database directory=DATA_PUMP_DIR dumpfile=biblioteca.dmp schemas=tu_esquema
+```
+
+### Opción 3: Backup Completo
+```sql
+-- Crear backup completo
+CREATE OR REPLACE DIRECTORY backup_dir AS '/path/to/backup';
+-- Usar Oracle RMAN para backup/restore completo
+```
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crear una rama feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit los cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abrir un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
+
+## 📞 Soporte
+
+Si tienes problemas con la instalación:
+
+1. Revisa la sección de solución de problemas
+2. Verifica que todos los requisitos estén instalados
+3. Comprueba los logs de Laravel: `storage/logs/laravel.log`
+4. Verifica la conexión Oracle con el comando de prueba
+
+## 🚀 Siguientes Pasos
+
+- [ ] Implementar módulo de préstamos
+- [ ] Agregar sistema de reportes
+- [ ] Implementar búsqueda avanzada
+- [ ] Agregar API REST
+- [ ] Implementar notificaciones

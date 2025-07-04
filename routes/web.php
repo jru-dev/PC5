@@ -7,9 +7,13 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
+// Rutas protegidas
 Route::middleware('oracle.auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
